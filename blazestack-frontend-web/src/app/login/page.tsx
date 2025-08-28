@@ -3,6 +3,8 @@
 import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { redirect, RedirectType } from 'next/navigation';
+
+/* External */
 import axios from 'axios';
 
 /* Project */
@@ -19,8 +21,6 @@ export default function LoginPage() {
 
   const saveUser = (user: { token: string; name: string; email: string }) => {
     localStorage.setItem('token', user.token);
-
-    console.log('==> redirecting...');
 
     setUser({
       token: user.token,
@@ -53,15 +53,23 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    if (user?.token) {
+    const token = localStorage.getItem('token');
+    const userToken = user?.token;
+
+    if (!userToken && !token) {
+      setLoading(false);
+      return;
+    }
+
+    if (userToken) {
+      setLoading(false);
       redirect('/', RedirectType.replace);
     }
 
-    const token = localStorage.getItem('token');
     if (token) {
       getProfile(token);
     }
-  }, [user]);
+  }, [getProfile, user]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,8 +85,6 @@ export default function LoginPage() {
         },
       );
 
-      console.log('login result', data);
-
       if (data?.data?.token) {
         saveUser({
           token: data.data.token,
@@ -89,7 +95,6 @@ export default function LoginPage() {
         throw new Error('Login failed');
       }
     } catch (err) {
-      console.log({ err });
       setError('Login failed. Please try again.');
     } finally {
       setIsSubmitting(false);

@@ -1,13 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 export type Incident = {
   id: string | number;
   title: string;
   incidentType: string;
-  date?: string | number | Date;
+  description?: string | null;
+  location?: string | null;
+  creationTime?: string | number | Date;
   image?: string | null;
 };
 
@@ -28,24 +29,11 @@ function formatDate(value?: string | number | Date) {
   }
 }
 
-export default function IncidentsTable() {
-  const [incidents, setIndicents] = useState<Incident[]>([]);
-
-  const fetchIncidents = async () => {
-    const response = await fetch('http://localhost:8080/api/v1/incidents', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
-    console.log({ data });
-    setIndicents(data.data?.incidents || []);
-  };
-
-  useEffect(() => {
-    fetchIncidents();
-  }, []);
-
+export default function IncidentsTable({
+  incidents,
+}: {
+  incidents: Incident[];
+}) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
@@ -108,7 +96,7 @@ export default function IncidentsTable() {
                 </td>
                 <td className="px-4 py-3">
                   <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                    {formatDate(inc.date)}
+                    {formatDate(inc.creationTime)}
                   </span>
                 </td>
               </tr>

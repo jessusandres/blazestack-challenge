@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
+
+/* Project */
 import { AuthContext, IAuthUser } from '@/context/auth.context';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

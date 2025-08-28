@@ -33,7 +33,7 @@ func ValidateJsonPayload[T any](c *gin.Context) (T, bool) {
 			out := make([]types.ValidationError, len(ve))
 
 			for i, fe := range ve {
-				out[i] = types.ValidationError{fe.Field(), GetErrorMsg(fe)}
+				out[i] = types.ValidationError{Field: fe.Field(), Message: GetErrorMsg(fe)}
 			}
 
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": out})

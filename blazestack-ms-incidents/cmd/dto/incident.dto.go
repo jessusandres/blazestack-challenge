@@ -1,6 +1,9 @@
 package dto
 
-type ProductToCreate struct {
-	Name string `json:"name" binding:"required,min=2,max=255"`
-	Sku  string `json:"sku" binding:"required,min=2,max=255"`
+type IncidentToCreate struct {
+	Title        string `json:"title" binding:"required"`
+	Description  string `json:"description" binding:""`
+	IncidentType string `json:"incidentType" binding:"required"`
+	Location     string `json:"location" binding:""`
+	Image        string `json:"image" binding:""`
 }

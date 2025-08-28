@@ -11,8 +11,6 @@ import (
 )
 
 func ParseToken(c *gin.Context, tokenString string, reqUuid string) (types.TokenClaims, bool) {
-	println("Trying to parse token: ", tokenString, " for request: ", reqUuid, "")
-
 	claims := &types.TokenClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {

@@ -10,26 +10,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateProduct(c *gin.Context) {
-	productToCreate, ok := helpers.ValidateJsonPayload[dto.ProductToCreate](c)
+func CreateIncident(c *gin.Context) {
+	imageEncoded, err := helpers.ExtractImageForm("image", c)
 
-	if !ok {
+	if err != nil {
+		c.Error(err)
+
 		return
 	}
 
-	product, err := services.CreateProduct(productToCreate)
+	title := c.PostForm("title")
+	incidentType := c.PostForm("incidentType")
+	description := c.PostForm("description")
+	location := c.PostForm("location")
+
+	product, err := services.CreateProduct(
+		dto.IncidentToCreate{
+			Title:        title,
+			Description:  description,
+			IncidentType: incidentType,
+			Location:     location,
+			Image:        imageEncoded,
+		},
+	)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, types.Response{
-			Data: nil,
-		})
+		c.Error(
+			err)
 
 		return
 	}
 
 	response := types.Response{
-		Data: types.ProductCreatedResponse{
-			Product: product,
+		Data: types.IncidentCreatedResponse{
+			Incident: product,
 		},
 	}
 
@@ -37,4 +51,16 @@ func CreateProduct(c *gin.Context) {
 		http.StatusCreated,
 		response,
 	)
+}
+
+func FetchAllIncidents(c *gin.Context) {
+	incidents := services.FetchAllIncidents()
+
+	c.JSON(
+		http.StatusOK,
+		types.Response{
+			Data: types.IncidentsResponse{
+				Incidents: incidents,
+			},
+		})
 }

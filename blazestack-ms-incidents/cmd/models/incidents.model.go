@@ -1,15 +1,16 @@
 package models
 
+import "time"
+
 type Incident struct {
-	Id           uint   `json:"id" gorm:"primaryKey"`
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	IncidentType string `json:"incidentType" gorm:"column:incident_type"`
-	Location     string `json:"location"`
-	Image        string `json:"image"`
-	Date         string `json:"date" gorm:"column:incident_date"`
-	CreatedAt    string `json:"-" gorm:"-:save" gorm:"column:created_at"`
-	UpdatedAt    string `json:"-" gorm:"-:save" gorm:"column:updated_at"`
+	ID           uint `gorm:"primaryKey"`
+	Title        string
+	Description  string
+	IncidentType string `gorm:"column:incident_type"`
+	Location     string
+	Image        string
+	CreatedAt    time.Time `gorm:"column:created_at"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime,column:updated_at"`
 }
 
 func (m *Incident) TableName() string {

@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	"blazestack.com/ms-incidents/cmd/apperrors"
+	"blazestack.com/ms-incidents/cmd/dto"
 	"blazestack.com/ms-incidents/cmd/helpers"
+	"blazestack.com/ms-incidents/cmd/middlewares"
 	"blazestack.com/ms-incidents/cmd/types"
 	"github.com/gin-gonic/gin"
 )
@@ -16,15 +18,9 @@ type AuthPayload struct {
 }
 
 func Login(c *gin.Context) {
+	payload, success := middlewares.GetValidatedPayload[dto.LoginDto](c)
 
-	var payload AuthPayload
-	err := c.ShouldBindJSON(&payload)
-	if err != nil {
-
-		c.Error(
-			apperrors.NewBadRequestError("invalid payload"),
-		)
-
+	if !success {
 		return
 	}
 
@@ -57,7 +53,7 @@ func Login(c *gin.Context) {
 
 		return
 	}
-
+	
 	response := types.Response{
 		Data: gin.H{
 			"token": token,
